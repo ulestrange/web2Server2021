@@ -15,7 +15,7 @@ app.get('/bananas', (req, res) =>
   res.send('hello world, this is bananas'));
 
 
-  app.post('/book', (req, res) => {
+  app.post('/books', (req, res) => {
 
     const book = req.body;
 

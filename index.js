@@ -9,7 +9,7 @@ app.use(express.urlencoded({extended: false})); //Parse URL-encoded bodies
 
 let books = [];
 
-app.get('/', (req, res) => res.send('Hello World from Una!'))
+app.get('/', (req, res) => res.send('Hello World from Una using nodemon!'))
 
 app.get('/bananas', (req, res) =>
   res.send('hello world, this is bananas'));
@@ -34,6 +34,13 @@ app.get('/bananas', (req, res) =>
 app.get('/books/:id', (req,res) => {
 
     let id = req.params.id;
+
+    if (id >= books.length) 
+    {
+      res.status(404);
+      res.json({error: 'not found'})
+    }
+
      res.json(books[id]);
  })
 

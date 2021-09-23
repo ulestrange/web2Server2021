@@ -72,10 +72,35 @@ app.delete('/books/:id', (req, res) => {
 
   const book = books.find(b => b.id === parseInt(req.params.id))
 
-  let id = req.params.id;
-  console.log(`removing book ${books[id].name}`)
-  books.splice(req.params.id, 1);
-  res.send(books);
+  if (!book) {
+    res.status(404).json(`book with that ID {id} was not found`);
+    return;
+  }
+
+
+  const index = books.indexOf(book);
+
+  books.splice(index, 1);
+  res.send(book);
+
+})
+
+app.put('/books/:id', (req, res) => {
+
+  const id = req.params.id;
+
+  const book = books.find(b => b.id === parseInt(req.params.id))
+
+  if (!book) {
+    res.status(404).json(`book with that ID {id} was not found`);
+    return;
+  }
+
+  console.log(`changing book ${book.name}`);
+  book.name = req.body.name;
+  book.quantity = req.body.quantity;
+
+  res.send(book);
 
 })
 

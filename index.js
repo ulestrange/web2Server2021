@@ -18,16 +18,22 @@ app.get('/bananas', (req, res) =>
   app.post('/books', (req, res) => {
 
     const book = req.body;
+    
+    const bookNumber = books.length;
 
     books.push(book);
 
-    res.send ('book has been added to the database');
+    res.location(`/books/${bookNumber}`)
+    .status(201)
+    .json('book');
+
+
     console.log(`book name is ${book.name} number of book(s) is ${books.length}`);
 
 });
 
   app.get('/books', (req, res) => {
-      res.send(books);
+      res.json(books);
   })
 
 

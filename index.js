@@ -25,7 +25,7 @@ app.get('/bananas', (req, res) =>
 
     res.location(`/books/${bookNumber}`)
     .status(201)
-    .json('book');
+    .json(book);
 
 
     console.log(`book name is ${book.name} number of book(s) is ${books.length}`);

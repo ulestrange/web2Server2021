@@ -1,22 +1,30 @@
-const Joi = require('joi');
+
+const mongoose = require('mongoose');
 const express = require('express');
+
+// use object desctructing
+
+
+const {Book, validate} = require('../models/books');
 
 const router = express.Router();
 
-let books = [
-  {
-    "id": 1,
-    "name": "Gansta Granny"
-  },
-  {
-    "id": 2,
-    "name": "The Boy in the Dress"
-  },
-  {
-    "id": 3,
-    "name": "Bad Dad"
-  },
-];
+
+
+
+
+async function createBook() {
+  
+  const book = new Book({
+    name: 'Una',
+    quantity: '5'
+  });
+
+  const result = await book.save();
+  console.log(result);
+}
+
+
 
 
 
@@ -47,7 +55,8 @@ router.post('/', (req, res) => {
 
 });
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  const books = await Book.find();
   res.json(books);
 })
 
@@ -114,12 +123,6 @@ router.put('/:id', (req, res) => {
 
 })
 
-function validateBook(book) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).required(),
-    quantity: Joi.number().integer().min(0)
-  })
-  return schema.validate(book);
-}
+
 
 module.exports = router;

@@ -11,11 +11,13 @@ app.use(express.urlencoded({ extended: false })); //Parse URL-encoded bodies
 let books = [
   {
     "bookId": 1,
-    "name": "Gansta Granny"
+    "name": "Gansta Granny",
+    "quantity": 3
   },
   {
     "bookId": 2,
-    "name": "The Boy in the Dress"
+    "name": "The Boy in the Dress",
+    "quantity": 2
   },
   {
     "bookId": 3,
@@ -64,7 +66,7 @@ app.get('/books/:id', (req, res) => {
 
   const id = req.params.id;
 
-  const book = books.find(b => b.BookId === parseInt(req.params.id))
+  const book = books.find(b => b.bookId === parseInt(req.params.id))
 
   if (!book) {
     res.status(404);

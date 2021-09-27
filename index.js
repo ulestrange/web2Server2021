@@ -10,15 +10,15 @@ app.use(express.urlencoded({ extended: false })); //Parse URL-encoded bodies
 
 let books = [
   {
-    "id": 1,
+    "bookId": 1,
     "name": "Gansta Granny"
   },
   {
-    "id": 2,
+    "bookId": 2,
     "name": "The Boy in the Dress"
   },
   {
-    "id": 3,
+    "bookId": 3,
     "name": "Bad Dad"
   },
 ];
@@ -33,7 +33,7 @@ app.post('/books', (req, res) => {
 
   const newBookId = books.length;
 
-  const book = { id: newBookId, ...req.body };
+  const book = { bookId: newBookId, ...req.body };
 
   const result = validateBook(req.body)
 
@@ -64,7 +64,7 @@ app.get('/books/:id', (req, res) => {
 
   const id = req.params.id;
 
-  const book = books.find(b => b.id === parseInt(req.params.id))
+  const book = books.find(b => b.BookId === parseInt(req.params.id))
 
   if (!book) {
     res.status(404);
@@ -80,7 +80,7 @@ app.delete('/books/:id', (req, res) => {
 
   const id = req.params.id;
 
-  const book = books.find(b => b.id === parseInt(req.params.id))
+  const book = books.find(b => b.bookId === parseInt(req.params.id))
 
   if (!book) {
     res.status(404).json(`book with that ID {id} was not found`);
@@ -107,7 +107,7 @@ app.put('/books/:id', (req, res) => {
     return;
   }
 
-  const book = books.find(b => b.id === parseInt(req.params.id))
+  const book = books.find(b => b.bookId === parseInt(req.params.id))
 
   if (!book) {
     res.status(404).json(`book with that ID {req.params.id} was not found`);

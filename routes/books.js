@@ -52,7 +52,7 @@ router.post('/', (req, res) => {
   })
   
   
-  router.get('/:id', (req, res) => {
+  router.get('/:id', middleware3, (req, res) => {
   
     const id = req.params.id;
   
@@ -121,5 +121,11 @@ router.post('/', (req, res) => {
     })
     return schema.validate(book);
   }
+
+  function middleware3 (req, res, next)
+{
+    console.log('middleware 3 caalled ');
+    next();
+}
 
   module.exports = router

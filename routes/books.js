@@ -31,11 +31,17 @@ router.post('/', async (req, res) => {
 
   let book = new Book(req.body);
 
-  book = await book.save();
+  try {
 
-  res.location(`/${book._id}`)
-    .status(201)
-    .json(book);
+    book = await book.save();
+    res.location(`/${book._id}`)
+      .status(201)
+      .json(book);
+  }
+  catch {
+    res.status(500).json(result.error);
+  }
+
 
 });
 
@@ -48,20 +54,17 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
 
   try {
-    const book = await Book.findById(req.params.id);
 
+    const book = await Book.findById(req.params.id);
     if (book) {
       res.json(book);
     }
-    else{
-      res.status(404);
-      res.json({ error: 'not found' });
+    else {
+      res.status(404).json('Not found');
     }
-   
   }
   catch {
-    res.status(404);
-    res.json({ error: 'not found' });
+    res.status(404).json('Not found: id is weird');
   }
 
 })
@@ -69,19 +72,19 @@ router.get('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
 
- try{
-  const book = await Book.findByIdAndDelete(req.params.id)
-  res.send(book)
- }
- catch{
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id)
+    res.send(book)
+  }
+  catch {
     res.status(404).json(`book with that ID ${req.params.id} was not found`);
- }
+  }
 
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
 
-  const id = req.params.id;
+
 
   const result = validate(req.body)
 
@@ -90,18 +93,19 @@ router.put('/:id', (req, res) => {
     return;
   }
 
-  const book = books.find(b => b.id === parseInt(req.params.id))
+  try {
 
-  if (!book) {
-    res.status(404).json(`book with that ID {req.params.id} was not found`);
-    return;
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    if (book) {
+      res.json(book);
+    }
+    else {
+      res.status(404).json('Not found');
+    }
   }
-
-  console.log(`changing book ${book.name}`);
-  book.name = req.body.name;
-  book.quantity = req.body.quantity;
-
-  res.send(book);
+  catch {
+    res.status(404).json('Not found: id is weird');
+  }
 
 })
 

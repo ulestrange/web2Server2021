@@ -37,9 +37,6 @@ router.post('/', async (req, res) => {
     .status(201)
     .json(book);
 
-
-  console.log(`book name is ${book.name} id book(s) is ${book._id}`);
-
 });
 
 router.get('/', async (req, res) => {

@@ -46,8 +46,15 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const books = await Book.find();
-  res.json(books);
+
+  try {
+
+    const books = await Book.find();
+    res.json(books);
+  }
+  catch {
+    res.status(500).json('db error')
+  }
 })
 
 
@@ -95,7 +102,7 @@ router.put('/:id', async (req, res) => {
 
   try {
 
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (book) {
       res.json(book);
     }

@@ -93,6 +93,8 @@ router.put('/:id', async (req, res) => {
     return;
   }
 
+  console.log(req.body);
+
   try {
 
     const book = await Book.findByIdAndUpdate(req.params.id, req.body, {new: true});

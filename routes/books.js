@@ -9,16 +9,6 @@ const { Book, validate } = require('../models/books');
 const router = express.Router();
 
 
-
-
-
-
-
-
-
-
-
-
 router.post('/', async (req, res) => {
 
   let result = validate(req.body)
@@ -46,7 +36,32 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const books = await Book.find();
+
+  // this uses object deconstruction to extract the data from the query string
+  // it is equivalent to writing
+  // const title = req.query.title
+  // const limit = req.query.limit
+  // const sum = req.query.sum
+
+  const { title, year_written } = req.query;
+
+  let filter = {};
+
+
+  if (title) {
+    filter.title = title
+  }
+  if (year_written){
+    filter.year_written = year_written
+  }
+
+
+
+  console.log(filter)
+
+  const books = await Book.
+    find(filter);
+
   res.json(books);
 })
 
@@ -97,7 +112,7 @@ router.put('/:id', async (req, res) => {
 
   try {
 
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (book) {
       res.json(book);
     }

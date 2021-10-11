@@ -8,7 +8,7 @@ const bookSchema = new mongoose.Schema({
     edition: String,
     price: Number,
     nested: { author : { name : String, nationality : String}},
-    tags: Array[String]
+    tags: [String]
 })
 
 const Book = mongoose.model('Book', bookSchema);
@@ -16,10 +16,14 @@ const Book = mongoose.model('Book', bookSchema);
 function validateBook(book) {
     const schema = Joi.object({
         title: Joi.string().min(3),
-        year_written: Joi.number().integer().min(0),
-        author: Joi.object( {name: Joi.string, nationality: Joi.string}),
-        edition: Joi.string,
-        price: Joi.number
+        year_written: Joi.number().integer().min(1500),
+        author: Joi.object().keys( {
+            name: Joi.string(), 
+            nationality: Joi.string()
+        }),
+        edition: Joi.string(),
+        price: Joi.number(),
+        tags: Joi.array().items(Joi.string())
     })
     return schema.validate(book);
 }

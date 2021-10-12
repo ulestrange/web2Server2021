@@ -37,23 +37,13 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
 
-  // this uses object deconstruction to extract the data from the query string
-  // it is equivalent to writing
-  // const title = req.query.title
-  // const year = req.query.year
-  // const limit = req.query.limit
+  const { title, year, limit, pagenumber, pagesize } = req.query;
 
-
-  const { title, year, limit } = req.query;
-
-  let filter = {};
-
-// the title filter uses a regular expression
+  let filter = {}
 
   if (title) {
-    filter.title = { $regex: `^${title}$`, $options: 'i' }
+    filter.title = { $regex: `${title}`, $options: 'i' };
   }
-
 
   // the year filter first needs to parse the year
 
@@ -63,27 +53,33 @@ router.get('/', async (req, res) => {
     filter.year_written = yearNumber
   }
 
-  /// not sure how to do this in Monggoose - will need to 
-  /// spend more time on this.
+  let limitNumber = parseInt(limit);
 
-  // if (nationality) {
-  //   filter["author.nationality"] = nationality
-  // }
-
-
-  console.log(filter)
-
-  let limitNumber = parseInt(limit)
   if (isNaN(limitNumber)) {
     limitNumber = 0
-
   }
 
-  console.log(limitNumber)
+  let pageSizeNumber = parseInt(pagesize);
+
+  if (isNaN(pageSizeNumber)) {
+    pageSizeNumber = 0
+  }
+  let pageNumberNumber = parseInt(pagenumber);
+
+  if (isNaN(pageNumberNumber)) {
+    pageNumberNumber = 1
+  }
+
+  console.table(filter);
 
   const books = await Book.
     find(filter).
-    limit(limitNumber);
+    limit(pageSizeNumber).
+    sort({price : 1, year_written : -1}).
+    skip((pageNumberNumber -1)*pageSizeNumber).
+    select('price year_written')
+
+
 
   res.json(books);
 })

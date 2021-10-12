@@ -40,27 +40,50 @@ router.get('/', async (req, res) => {
   // this uses object deconstruction to extract the data from the query string
   // it is equivalent to writing
   // const title = req.query.title
+  // const year = req.query.year
   // const limit = req.query.limit
-  // const sum = req.query.sum
 
-  const { title, year_written } = req.query;
+
+  const { title, year, limit } = req.query;
 
   let filter = {};
 
+// the title filter uses a regular expression
 
   if (title) {
-    filter.title = title
-  }
-  if (year_written){
-    filter.year_written = year_written
+    filter.title = { $regex: `^${title}$`, $options: 'i' }
   }
 
+
+  // the year filter first needs to parse the year
+
+  const yearNumber = parseInt(year)
+
+  if (!isNaN(yearNumber)) {
+    filter.year_written = yearNumber
+  }
+
+  /// not sure how to do this in Monggoose - will need to 
+  /// spend more time on this.
+
+  // if (nationality) {
+  //   filter["author.nationality"] = nationality
+  // }
 
 
   console.log(filter)
 
+  let limitNumber = parseInt(limit)
+  if (isNaN(limitNumber)) {
+    limitNumber = 0
+
+  }
+
+  console.log(limitNumber)
+
   const books = await Book.
-    find(filter);
+    find(filter).
+    limit(limitNumber);
 
   res.json(books);
 })

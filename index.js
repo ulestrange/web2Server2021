@@ -6,6 +6,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const books = require('./routes/books');
+const users = require('./routes/users');
+const auth = require('./routes/auth');
 const home = require('./routes/home');
 
 const app = express();
@@ -40,6 +42,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false })); //Parse URL-encoded bodies
 
 app.use('/books', books);
+app.use('/users', users);
+app.use('/auth', auth);
 app.use('/', home);
 
 

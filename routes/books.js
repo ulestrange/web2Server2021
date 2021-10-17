@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose');
 const express = require('express');
+const validationMiddleware = require('../middleware/jwtvalidation');
 
 // use object destructuring
 
@@ -85,7 +86,7 @@ router.get('/', async (req, res) => {
 })
 
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validationMiddleware.validJWTNeeded, async (req, res) => {
 
   try {
 

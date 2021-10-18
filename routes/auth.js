@@ -7,13 +7,11 @@ const router = express.Router();
 
 
 const { User } = require('../models/users');
-const { hasAuthValidFields, isPasswordAndUserMatch } = require('../middleware/verifyuser');
-
 
 const secret = 'unasverySecretSecret' // would normally import this from a config file
 
 
-router.post('/', isPasswordAndUserMatch, async (req, res) => {
+router.post('/',  async (req, res) => {
 
     // check that the body contains an email and a password.
 

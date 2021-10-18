@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
         lastName: String,
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-       // permissionLevel: Number  // for later athorization
         },
 );
 

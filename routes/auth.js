@@ -3,12 +3,14 @@ const express = require('express');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken')
 
+const credentials = require('../config')
+
 const router = express.Router();
 
 
 const { User } = require('../models/users');
 
-const secret = 'unasverySecretSecret' // would normally import this from a config file
+const secret = credentials.jwtsecretkey // would normally import this from a config file
 
 
 router.post('/',  async (req, res) => {

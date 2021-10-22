@@ -6,10 +6,10 @@ const  crypto = require( 'crypto');
 
 const credentials = require('../config')
 
-console.table(credentials)
 
 
-let secret =  credentials.jwtsecretkey // would normally import this from a config file
+
+let secret =  credentials.jwtsecretkey // 
 
 
 

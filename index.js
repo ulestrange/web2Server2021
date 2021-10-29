@@ -4,11 +4,13 @@
 const Joi = require('joi');
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const books = require('./routes/books');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const home = require('./routes/home');
+
 
 const app = express();
 const port = 3000;
@@ -40,6 +42,8 @@ db.once('open', () => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); //Parse URL-encoded bodies
+app.use(cors());
+
 
 app.use('/books', books);
 app.use('/users', users);

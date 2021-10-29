@@ -77,8 +77,8 @@ router.get('/', async (req, res) => {
     find(filter).
     limit(pageSizeNumber).
     sort({price : 1, year_written : -1}).
-    skip((pageNumberNumber -1)*pageSizeNumber).
-    select('price year_written')
+    skip((pageNumberNumber -1)*pageSizeNumber)
+
 
 
 

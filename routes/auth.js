@@ -59,7 +59,8 @@ router.post('/',  async (req, res) => {
         let payload = {};
         payload._id = user._id;
         payload.email = user.email;
-        payload.name = user.name;
+        payload.firstName = user.firstName;
+        payload.lastName = user.lastName;
 
  // sign the jwt and return it in the body of the request.       
 

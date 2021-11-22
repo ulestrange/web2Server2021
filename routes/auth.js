@@ -66,7 +66,7 @@ router.post('/',  async (req, res) => {
 
     let token = jwt.sign(payload, secret, { expiresIn: 60 });
         res.status(201).json({ 
-        SaccessToken: token,
+        accessToken: token,
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,

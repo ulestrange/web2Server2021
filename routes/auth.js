@@ -65,10 +65,12 @@ router.post('/',  async (req, res) => {
  // sign the jwt and return it in the body of the request.       
 
     let token = jwt.sign(payload, secret, { expiresIn: 60 });
-        res.status(201).json({ accessToken: token,
+        res.status(201).json({ 
+        SaccessToken: token,
+        _id: user._id,
         firstName: user.firstName,
-    lastName: user.lastName,
-email: user.email });
+        lastName: user.lastName,
+        email: user.email });
         console.log('login success');
 
 }

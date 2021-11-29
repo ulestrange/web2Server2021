@@ -13,7 +13,7 @@ const { User } = require('../models/users');
 const secret = credentials.jwtsecretkey // would normally import this from a config file
 
 
-router.post('/',  async (req, res) => {
+router.post('/', async (req, res) => {
 
     // check that the body contains an email and a password.
 
@@ -53,30 +53,87 @@ router.post('/',  async (req, res) => {
         return res.status(400).send({ errors: ['Invalid e-mail or password'] });
     }
 
-// here we know the received password is the same as the one stored.
+    // here we know the received password is the same as the one stored.
 
-// set the payload for the jwt.
-        let payload = {};
-        payload._id = user._id;
-        payload.email = user.email;
-        payload.firstName = user.firstName;
-        payload.lastName = user.lastName;
+    // set the payload for the jwt.
+    let payload = {};
+    payload._id = user._id;
+    payload.email = user.email;
+    payload.firstName = user.firstName;
+    payload.lastName = user.lastName;
 
- // sign the jwt and return it in the body of the request.       
+    // sign the jwt and return it in the body of the request. 
+    // expiry is in 2 mintues (60 * 2 )      
 
-    let token = jwt.sign(payload, secret, { expiresIn: 60 });
-        res.status(201).json({ 
+    let token = jwt.sign(payload, secret, { expiresIn: 60 * 2 });
+
+    let refreshToken = createRefreshToken();
+
+    res.cookie('refreshtoken', refreshToken, {
+        httpOnly: true,
+        path: '/user/refresh_token',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
+    })
+
+    res.status(201).json({
         accessToken: token,
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email });
-        console.log('login success');
+        email: user.email
+    });
+    console.log('login success');
+
 
 }
 );
 
+/// this is returning a 404 error need to fix this tomorrow
+// Una
 
+router.get('/refresh:/id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            // compare the stored refresh token to the one received in the cookie.
+            // if they match then create a new JWT and return.
+            // otherwise give an error
+
+            // set the payload for the jwt.
+            let payload = {};
+            payload._id = user._id;
+            payload.email = user.email;
+            payload.firstName = user.firstName;
+            payload.lastName = user.lastName;
+
+            // sign the jwt and return it in the body of the request. 
+            // expiry is in 2 mintues (60 * 2 )      
+
+            let token = jwt.sign(payload, secret, { expiresIn: 60 * 2 });
+
+            res.status(201).json({
+                accessToken: token,
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email
+            });
+            console.log('refresh success');
+        }
+        else {
+            res.status(404).json('Not found');
+        }
+    }
+    catch {
+        res.status(404).json('Not found: id is weird');
+    }
+
+})
+
+
+const createRefreshToken = () => {
+    return 'this is a dummy refresh token';
+}
 
 module.exports = router;
 

@@ -105,7 +105,7 @@ router.get('/:id', validationMiddleware.validJWTNeeded, async (req, res) => {
 })
 
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', validationMiddleware.validJWTNeeded, async (req, res) => {
 
   try {
     const book = await Book.findByIdAndDelete(req.params.id)

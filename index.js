@@ -1,4 +1,4 @@
-//const mongodb = require('mongodb');
+
 
 
 const Joi = require('joi');
@@ -7,10 +7,15 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
 
+const https = require('https')
+const fs = require('fs');
+
+
 const books = require('./routes/books');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const home = require('./routes/home');
+
 
 
 const app = express();
@@ -39,11 +44,14 @@ db.once('open', () => {
   console.log("DB connected")
 });
 
-
+const corsOptions = {
+  origin: 'https://localhost:4200',
+  credentials: true // for cookies
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); //Parse URL-encoded bodies
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 
@@ -54,8 +62,13 @@ app.use('/auth', auth);
 app.use('/', home);
 
 
+const serverOptions = {
+  key: fs.readFileSync("ssl/unalocal.key"),
+  cert: fs.readFileSync("ssl/unalocal.cert")
+};
 
 
+https.createServer(serverOptions,app).listen(8080,() =>
+  console.log(`listening on 8080, don't forget the https`));
 
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+//app.listen(port, () => console.log(`Example app listening on port ${port}!`))

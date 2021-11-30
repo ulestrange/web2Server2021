@@ -24,6 +24,10 @@ coverage
 # Benchmarking
 benchmarks/graphs
 
+## SSL certificate
+ssl
+
+
 # 
 
 .credentials.*

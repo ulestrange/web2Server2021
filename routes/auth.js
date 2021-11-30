@@ -9,6 +9,7 @@ const router = express.Router();
 
 
 const { User } = require('../models/users');
+const { NONAME } = require('dns');
 
 const secret = credentials.jwtsecretkey // would normally import this from a config file
 
@@ -135,6 +136,9 @@ const setRefreshCookie =  (user, res) =>  {
     res.cookie('refreshtoken', refreshToken, {
       //  httpOnly: true,
      //   path: '/auth/refresh',
+     sameSite: 'none',
+     secure : true,
+    
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
     })
 

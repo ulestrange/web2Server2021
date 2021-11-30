@@ -55,25 +55,9 @@ router.post('/', async (req, res) => {
 
     // here we know the received password is the same as the one stored.
 
-    // set the payload for the jwt.
-    let payload = {};
-    payload._id = user._id;
-    payload.email = user.email;
-    payload.firstName = user.firstName;
-    payload.lastName = user.lastName;
+    const token = createJWT(user);
 
-    // sign the jwt and return it in the body of the request. 
-    // expiry is in 2 mintues (60 * 2 )      
-
-    let token = jwt.sign(payload, secret, { expiresIn: 60 * 2 });
-
-    let refreshToken = createRefreshToken();
-
-    res.cookie('refreshtoken', refreshToken, {
-        httpOnly: true,
-        path: '/user/refresh_token',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
-    })
+    setRefreshCookie(user, res);
 
     res.status(201).json({
         accessToken: token,
@@ -88,28 +72,33 @@ router.post('/', async (req, res) => {
 }
 );
 
-/// this is returning a 404 error need to fix this tomorrow
-// Una
 
-router.get('/refresh:/id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
-        if (user) {
-            // compare the stored refresh token to the one received in the cookie.
-            // if they match then create a new JWT and return.
-            // otherwise give an error
+router.get('/refresh/:id', async (req, res) => {
 
-            // set the payload for the jwt.
-            let payload = {};
-            payload._id = user._id;
-            payload.email = user.email;
-            payload.firstName = user.firstName;
-            payload.lastName = user.lastName;
+    console.table(req.cookies);
+    
+    user = await User.findOne({_id: req.params.id});
 
-            // sign the jwt and return it in the body of the request. 
-            // expiry is in 2 mintues (60 * 2 )      
 
-            let token = jwt.sign(payload, secret, { expiresIn: 60 * 2 });
+    
+    if (!user)  return res.status(401).json('Auth failed');
+
+  
+    // here we have a user which was found in the database.
+    // compare the stored refresh token to the one received in the cookie.
+
+    console.log('cookie is ' + req.cookies.refreshtoken);
+
+    if (user.refeshToken != req.cookies.refreshtoken) return res.status(401).json('Auth failed');
+  
+    // here we have a matching refresh token create a new JWT and return.
+     // otherwise give an error
+
+
+    const token = createJWT(user);
+
+    setRefreshCookie(user, res);
+
 
             res.status(201).json({
                 accessToken: token,
@@ -119,19 +108,40 @@ router.get('/refresh:/id', async (req, res) => {
                 email: user.email
             });
             console.log('refresh success');
-        }
-        else {
-            res.status(404).json('Not found');
-        }
-    }
-    catch {
-        res.status(404).json('Not found: id is weird');
-    }
 
 })
 
 
-const createRefreshToken = () => {
+const createJWT = (user) => {
+
+    let payload = {};
+    payload._id = user._id;
+    payload.email = user.email;
+    payload.firstName = user.firstName;
+    payload.lastName = user.lastName;
+
+    // sign the jwt and return it in the body of the request. 
+    // expiry is in 2 mintues (60 * 2 )      
+
+    const token = jwt.sign(payload, secret, { expiresIn: 60 * 2 });
+    return token;
+
+}
+
+const setRefreshCookie =  (user, res) =>  {
+
+    let refreshToken = createRefreshToken(user);
+
+    res.cookie('refreshtoken', refreshToken, {
+      //  httpOnly: true,
+     //   path: '/auth/refresh',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
+    })
+
+}
+
+
+const createRefreshToken = (user) => {
     return 'this is a dummy refresh token';
 }
 

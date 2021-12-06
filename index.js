@@ -6,7 +6,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
-
 const https = require('https')
 const fs = require('fs');
 
@@ -21,7 +20,7 @@ const home = require('./routes/home');
 const app = express();
 const port = 3000;
 
-// configure the middleware for parsing HTML requeest body
+
 
 const connectionString = 'mongodb://127.0.0.1:27017/books2021'
 
@@ -48,6 +47,8 @@ const corsOptions = {
   origin: 'https://localhost:4200',
   credentials: true // for cookies
 }
+
+// configure the middleware for parsing HTML requeest body
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); //Parse URL-encoded bodies
